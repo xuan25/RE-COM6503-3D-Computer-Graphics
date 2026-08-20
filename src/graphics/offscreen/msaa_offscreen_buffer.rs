@@ -42,6 +42,21 @@ impl MsaaOffscreenBuffer {
 
 impl OffscreenBuffer for MsaaOffscreenBuffer {
     unsafe fn reshape(&mut self, width: i32, height: i32) -> Result<(), String> {
+        // Keep the legacy 16x request whenever it is supported. Windows
+        // drivers may expose a lower GL_MAX_SAMPLES value, in which case a
+        // 16x multisample allocation is invalid before FBO completeness is
+        // even evaluated.
+        let mut max_samples = 0;
+        gl::GetIntegerv(gl::MAX_SAMPLES, &mut max_samples);
+        let supported_samples = self.samples.min(max_samples.max(1));
+        if supported_samples != self.samples {
+            println!(
+                "MSAA: requested {}x; using {}x supported by this OpenGL driver",
+                self.samples, supported_samples
+            );
+            self.samples = supported_samples;
+        }
+
         self.clear_buffers();
         self.width = width;
         self.height = height;
