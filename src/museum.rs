@@ -73,6 +73,10 @@ impl Museum {
             .ok_or("unable to create GLFW window")?;
         window.make_current();
         window.set_key_polling(true);
+        // `WindowEvent::Size` is delivered only when this callback is
+        // enabled. It drives the existing framebuffer and projection resize
+        // path below.
+        window.set_size_polling(true);
         // GLFW only sends mouse-button events through its event channel when
         // this callback is enabled.  Without it Dear ImGui receives cursor
         // movement but never a click, so every sidebar control is inert.
