@@ -6,5 +6,8 @@ edition = "2024"
 [dependencies]
 gl = { version = "0" }
 glfw = "0"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
+imgui = "0.9"
+imgui-opengl-renderer = "0.12.1"
 
 [dev-dependencies]
